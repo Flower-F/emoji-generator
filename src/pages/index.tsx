@@ -145,10 +145,13 @@ const IndexPage = () => {
       flex="~ col" items-center justify-center gap-4 w-full h-auto max-w-800px mx-auto py-4
       bg="#f9f9f9 dark:#121212" rounded-md shadow-teal shadow-sm
     >
+
+      {/* 展示区域 */}
       <div flex items-center justify-center mt-4 w="200px" h="200px" border="2 neutral-3" rounded-2xl>
         <canvas width="640" height="640" w="160px" h="160px" ref={canvas}></canvas>
       </div>
 
+      {/* 操作区域 */}
       <div flex gap-2 bg="teal-5" px-3 py-2 rounded-full>
         <button rounded-btn>
           <div i-ooui-previous-ltr></div>
@@ -164,6 +167,7 @@ const IndexPage = () => {
         </button>
       </div>
 
+      {/* 随机与下载区域 */}
       <div flex flex-col sm:flex-row gap-2 bg="teal-4 dark:teal-6" transition-colors p-3 rounded mt-4>
         <button className="btn" onClick={getRandom}>
           <div>Randomize</div>
@@ -175,67 +179,43 @@ const IndexPage = () => {
         </button>
       </div>
 
+      {/* 一级选择区域 */}
       <div
         flex flex-wrap justify-center items-center gap-3 p-4
         border="b neutral-4 op-20" className="w-85%"
       >
         {tabs.map((tab, index) => (
-          selectedTab === tab
-            ? <button
-                key={tab + index}
-                flex items-center justify-center cursor-pointer transition-colors h-16 w-16 rounded-lg
-                border="~ teal-7 dark:teal-2 op-40"
-                bg="teal-2 dark:teal-4"
-                hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
-                onClick={() => setSelectedTab(tab)}
-              >
-                {
-                  selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
-                }
-              </button>
-            : <button
-              key={tab + index}
-              flex items-center justify-center cursor-pointer transition-colors h-16 w-16 rounded-lg
-              bg="teal-1 dark:#333"
-              border="~ teal-7 dark:teal-2 op-40"
-              hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
-              onClick={() => setSelectedTab(tab)}
-            >
-              {
-                selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
-              }
-            </button>
+          <button
+            key={tab + index}
+            flex items-center justify-center cursor-pointer transition-colors h-16 w-16 rounded-lg
+            border="~ teal-7 dark:teal-2 op-40"
+            bg={tab === selectedTab ? 'teal-3 dark:teal-4' : 'teal-1 dark:#333'}
+            hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
+            onClick={() => setSelectedTab(tab)}
+          >
+            {
+              selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
+            }
+          </button>
         ))}
       </div>
 
+      {/* 二级选择区域 */}
       <div p-4 flex items-center justify-center flex-wrap gap-3 className="w-85%">
         {(Object.keys(images) as (keyof typeof images)[]).map(tab => (
-          selectedTab === tab
-          && images[tab].map((image, index) => (
-            selectedIndex[selectedTab] === index
-              ? <button
-                key={tab + index}
-                flex items-center justify-center cursor-pointer transition-colors h-12 w-12 rounded-lg
-                border="~ teal-7 dark:teal-2 op-40"
-                bg="teal-2 dark:teal-4"
-                hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
-              >
-                {
-                  image && <img h-10 w-10 rounded-lg src={image} alt={tab} />
-                }
-              </button>
-              : <button
-                key={tab + index}
-                flex items-center justify-center cursor-pointer transition-colors h-12 w-12 rounded-lg
-                bg="teal-1 dark:#333"
-                border="~ teal-7 dark:teal-2 op-40"
-                hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
-                onClick={() => selectItem(tab, index)}
-              >
-                {
-                  image && <img h-10 w-10 rounded-lg src={image} alt={tab} />
-                }
-              </button>
+          selectedTab === tab && images[tab].map((image, index) => (
+            <button
+              key={tab + index}
+              flex items-center justify-center cursor-pointer transition-colors h-12 w-12 rounded-lg
+              border="~ teal-7 dark:teal-2 op-40"
+              bg={selectedIndex[selectedTab] === index ? 'teal-3 dark:teal-4' : 'teal-1 dark:#333'}
+              hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
+              onClick={() => selectItem(tab, index)}
+            >
+              {
+                image && <img h-10 w-10 rounded-lg src={image} alt={tab + index} />
+              }
+            </button>
           ))
         ))}
       </div>
