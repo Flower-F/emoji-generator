@@ -40,7 +40,7 @@ const IndexPage = () => {
     detail: 0,
   })
 
-  const selectedImage = () => {
+  const selectedImage = useCallback(() => {
     return {
       head: images.head[selectedIndex.head],
       eyes: images.eyes[selectedIndex.eyes],
@@ -48,13 +48,13 @@ const IndexPage = () => {
       mouth: images.mouth[selectedIndex.mouth],
       detail: images.detail[selectedIndex.detail],
     }
-  }
+  }, [images.detail, images.eyebrows, images.eyes, images.head, images.mouth, selectedIndex.detail, selectedIndex.eyebrows, selectedIndex.eyes, selectedIndex.head, selectedIndex.mouth])
 
   const randomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
 
-  const getRandom = () => {
+  const getRandom = useCallback(() => {
     const randomIndex = {
       head: randomInt(0, images.head.length - 1),
       eyes: randomInt(0, images.eyes.length - 1),
@@ -63,7 +63,7 @@ const IndexPage = () => {
       detail: randomInt(0, images.detail.length - 1),
     }
     setSelectedIndex(randomIndex)
-  }
+  }, [images.detail.length, images.eyebrows.length, images.eyes.length, images.head.length, images.mouth.length])
 
   const exportImage = (blob: Blob | null) => {
     if (!blob)
@@ -76,72 +76,65 @@ const IndexPage = () => {
     a.click()
   }
 
-  const loadImage = async () => {
-    // head
-    const headModules = import.meta.glob<SvgImageModule>('./assets/head/*.svg')
-    const fullHeadImages = await resolveImportGlobModule(headModules)
-    // eyes
-    const eyesModules = import.meta.glob<SvgImageModule>('./assets/eyes/*.svg')
-    const fullEyesImages = await resolveImportGlobModule(eyesModules)
-    // eyebrows
-    const eyebrowsModules = import.meta.glob<SvgImageModule>('./assets/eyebrows/*.svg')
-    const fullEyebrowsImages = await resolveImportGlobModule(eyebrowsModules)
-    // mouth
-    const mouthModules = import.meta.glob<SvgImageModule>('./assets/mouth/*.svg')
-    const fullMouthImages = await resolveImportGlobModule(mouthModules)
-    // detail
-    const detailModules = import.meta.glob<SvgImageModule>('./assets/details/*.svg')
-    const fullDetailImages = await resolveImportGlobModule(detailModules)
+  const loadImage = useCallback(async () => {
+    // load materials
+    const headModules = import.meta.glob<SvgImageModule>('~/assets/head/*.svg')
+    const headImages = await resolveImportGlobModule(headModules)
+    const eyesModules = import.meta.glob<SvgImageModule>('~/assets/eyes/*.svg')
+    const eyesImages = await resolveImportGlobModule(eyesModules)
+    const eyebrowsModules = import.meta.glob<SvgImageModule>('~/assets/eyebrows/*.svg')
+    const eyebrowsImages = await resolveImportGlobModule(eyebrowsModules)
+    const mouthModules = import.meta.glob<SvgImageModule>('~/assets/mouth/*.svg')
+    const mouthImages = await resolveImportGlobModule(mouthModules)
+    const detailModules = import.meta.glob<SvgImageModule>('~/assets/details/*.svg')
+    const detailImages = await resolveImportGlobModule(detailModules)
+
     setImages({
-      head: fullHeadImages,
-      eyes: ['', ...fullEyesImages],
-      eyebrows: ['', ...fullEyebrowsImages],
-      mouth: ['', ...fullMouthImages],
-      detail: ['', ...fullDetailImages],
+      head: headImages,
+      eyes: ['', ...eyesImages],
+      eyebrows: ['', ...eyebrowsImages],
+      mouth: ['', ...mouthImages],
+      detail: ['', ...detailImages],
     })
     getRandom()
-  }
+  }, [getRandom])
 
   useEffect(() => {
     loadImage()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [loadImage])
 
-  let canvas: HTMLCanvasElement
+  const canvas = useRef<HTMLCanvasElement | null>(null)
   const CANVAS_LENGTH = 640
 
   useEffect(() => {
-    const headPath = selectedImage().head
-    const eyesPath = selectedImage().eyes
-    const eyebrowsPath = selectedImage().eyebrows
-    const mouthPath = selectedImage().mouth
-    const detailPath = selectedImage().detail
+    if (!canvas.current)
+      return
+
+    const { head, eyebrows, eyes, mouth, detail } = selectedImage()
 
     Promise.all([
-      pathToImage(headPath),
-      pathToImage(eyesPath),
-      pathToImage(eyebrowsPath),
-      pathToImage(mouthPath),
-      pathToImage(detailPath),
+      pathToImage(head),
+      pathToImage(eyes),
+      pathToImage(eyebrows),
+      pathToImage(mouth),
+      pathToImage(detail),
     ]).then((images) => {
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.current?.getContext('2d')
       if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.clearRect(0, 0, canvas.current?.width || 0, canvas.current?.height || 0)
         images.forEach((img) => {
           img && ctx.drawImage(img, 0, 0, CANVAS_LENGTH, CANVAS_LENGTH)
         })
-        canvas.classList.add('animation')
+        canvas.current?.classList.add('animation')
         setTimeout(() => {
-          canvas.classList.remove('animation')
+          canvas.current?.classList.remove('animation')
         }, 500)
-        return true
       }
-      return false
+      return null
     }).catch((e) => {
       console.error('Error:', e)
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [selectedImage])
 
   const selectItem = (tab: TEmoji, index: number) => {
     setSelectedIndex({ ...selectedIndex, [tab]: index })
@@ -153,7 +146,7 @@ const IndexPage = () => {
       bg="#f9f9f9 dark:#121212" rounded-md shadow-teal shadow-sm
     >
       <div flex items-center justify-center mt-4 w="200px" h="200px" border="2 neutral-3" rounded-2xl>
-        <canvas width="640" height="640" w="160px" h="160px"></canvas>
+        <canvas width="640" height="640" w="160px" h="160px" ref={canvas}></canvas>
       </div>
 
       <div flex gap-2 bg="teal-5" px-3 py-2 rounded-full>
@@ -176,7 +169,7 @@ const IndexPage = () => {
           <div>Randomize</div>
           <div i-carbon-loop text-xl></div>
         </button>
-        <button className="btn" onClick={() => canvas.toBlob(exportImage)}>
+        <button className="btn" onClick={() => canvas.current?.toBlob(exportImage)}>
           <div>Download</div>
           <div i-carbon-download text-base></div>
         </button>
@@ -192,57 +185,58 @@ const IndexPage = () => {
                 key={tab + index}
                 flex items-center justify-center cursor-pointer transition-colors h-16 w-16 rounded-lg
                 border="~ teal-7 dark:teal-2 op-40"
-                bg="teal-2 dark:teal-2"
+                bg="teal-2 dark:teal-4"
                 hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
                 onClick={() => setSelectedTab(tab)}
               >
                 {
-                  selectedImage()[tab]
-                  && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
+                  selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
                 }
               </button>
             : <button
               key={tab + index}
               flex items-center justify-center cursor-pointer transition-colors h-16 w-16 rounded-lg
               bg="teal-1 dark:#333"
-              hover="bg-teal-4 dark:bg-teal-3"
+              border="~ teal-7 dark:teal-2 op-40"
+              hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
               onClick={() => setSelectedTab(tab)}
             >
               {
-                selectedImage()[tab]
-                && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
+                selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
               }
             </button>
         ))}
       </div>
 
       <div p-4 flex items-center justify-center flex-wrap gap-3 className="w-85%">
-        {(Object.keys(images) as (keyof typeof images)[]).map((tab, index) => (
+        {(Object.keys(images) as (keyof typeof images)[]).map(tab => (
           selectedTab === tab
-            ? <button
+          && images[tab].map((image, index) => (
+            selectedIndex[selectedTab] === index
+              ? <button
                 key={tab + index}
                 flex items-center justify-center cursor-pointer transition-colors h-12 w-12 rounded-lg
                 border="~ teal-7 dark:teal-2 op-40"
-                bg="teal-2 dark:teal-2"
+                bg="teal-2 dark:teal-4"
                 hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
               >
                 {
-                  selectedImage()[tab]
-                  && <img h-10 w-10 rounded-lg src={selectedImage()[tab]} alt={tab} />
+                  image && <img h-10 w-10 rounded-lg src={image} alt={tab} />
                 }
               </button>
-            : <button
+              : <button
                 key={tab + index}
                 flex items-center justify-center cursor-pointer transition-colors h-12 w-12 rounded-lg
                 bg="teal-1 dark:#333"
-                hover="bg-teal-4 dark:bg-teal-3"
+                border="~ teal-7 dark:teal-2 op-40"
+                hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
                 onClick={() => selectItem(tab, index)}
               >
                 {
-                  selectedImage()[tab]
-                  && <img h-10 w-10 rounded-lg src={selectedImage()[tab]} alt={tab} />
+                  image && <img h-10 w-10 rounded-lg src={image} alt={tab} />
                 }
               </button>
+          ))
         ))}
       </div>
     </div>
