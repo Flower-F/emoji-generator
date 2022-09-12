@@ -192,15 +192,9 @@ const IndexPage = () => {
             bg="teal-1 dark:#333"
             hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
             onClick={() => setSelectedTab(tab)}
-            style={tab === selectedTab
-              ? {
-                  background: 'rgba(94, 234, 212, var(--un-bg-opacity))',
-                }
-              : undefined}
+            style={tab === selectedTab ? { background: 'rgba(94, 234, 212, var(--un-bg-opacity))' } : undefined}
           >
-            {
-              selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />
-            }
+            {selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />}
           </button>
         ))}
       </div>
@@ -216,15 +210,9 @@ const IndexPage = () => {
               bg="teal-1 dark:#333 teal-3 dark:teal-4"
               hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
               onClick={() => selectItem(tab, index)}
-              style={selectedIndex[selectedTab] === index
-                ? {
-                    background: 'rgba(94, 234, 212, var(--un-bg-opacity))',
-                  }
-                : undefined}
+              style={selectedIndex[selectedTab] === index ? { background: 'rgba(94, 234, 212, var(--un-bg-opacity))' } : undefined}
             >
-              {
-                image && <img h-10 w-10 rounded-lg src={image} alt={tab + index} />
-              }
+              {image && <img h-10 w-10 rounded-lg src={image} alt={tab + index} />}
             </button>
           ))
         ))}

@@ -14,3 +14,11 @@ html {
 html.dark {
   background: #333;
 }
+
+@keyframes enlarge {
+  60% { transform: scale(1.06); }
+}
+
+canvas.animation {
+  animation: enlarge 0.3s alternate;
+}
