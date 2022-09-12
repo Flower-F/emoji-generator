@@ -2,12 +2,12 @@ const Header = () => {
   const { toggleDark } = useDark()
 
   return (
-    <div flex justify-between text="xl black dark:neutral-200">
-      <h1 text-xl font-extrabold tracking-wide>
+    <header flex justify-between text="xl black dark:neutral-2">
+      <h1 text-lg font-extrabold tracking-wide>
         Emoji Generator
       </h1>
 
-      <nav text-xl inline-flex pb-10>
+      <nav text-xl inline-flex pb-4>
         <button icon-btn onClick={toggleDark}>
           <div dark:i-carbon-moon i-carbon-sun />
         </button>
@@ -22,7 +22,7 @@ const Header = () => {
           Github Link
         </a>
       </nav>
-    </div>
+    </header>
   )
 }
 

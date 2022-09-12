@@ -1,0 +1,23 @@
+const Footer = () => {
+  return (
+    <div text="base neutral-6 dark:neutral-4" p="b-6 t-3">
+      <div>
+        Assets are from {' '}
+        <a dashed-link href="https://github.com/microsoft/fluentui-emoji" target="_blank" rel="noreferrer">Fluent Emoji</a>
+        {' '} by Microsoft.
+      </div>
+      <div>
+        Strongly inspired by
+        {' '} <a dashed-link href="https://github.com/ddiu8081" target="_blank" rel="noreferrer">Diu</a> &
+        {' '} <a dashed-link href="https://github.com/Codennnn" target="_blank" rel="noreferrer">Codennnn</a>
+      </div>
+      <div>
+        Made by
+        {' '} <a dashed-link href="https://github.com/Flower-F" target="_blank" rel="noreferrer">Flower-F</a> {' '} |
+        {' '} <a dashed-link href="https://github.com/Flower-F/emoji-generator" target="_blank" rel="noreferrer">Source Code</a>
+      </div>
+    </div>
+  )
+}
+
+export default Footer
