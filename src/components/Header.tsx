@@ -1,17 +1,26 @@
 import { useTranslation } from 'react-i18next'
 
+import i18n, { resources } from '~/i18n'
+
 const Header = () => {
   const { toggleDark } = useDark()
   const { t } = useTranslation()
 
+  const [language, setLanguage] = useState(0)
+  const toggleLocales = () => {
+    const locales = Object.keys(resources)
+    setLanguage(language => (language + 1) % locales.length)
+    i18n.changeLanguage(locales[(language + 1) % locales.length])
+  }
+
   return (
     <header flex justify-between text="xl black dark:neutral-2">
       <h1 text-lg font-extrabold tracking-wide>
-        Emoji Generator {t('methods.hook')}
+        {t('title')}
       </h1>
 
-      <nav text-xl inline-flex items-center gap-2 pb-4>
-        <button icon-btn>
+      <nav text-xl inline-flex items-center gap-3 pb-4>
+        <button icon-btn onClick={toggleLocales}>
           <div i-carbon-language />
         </button>
 

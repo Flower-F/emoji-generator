@@ -7,13 +7,13 @@ import zh from './locales/zh.json'
 
 export const resources = {
   en: {
-    en,
+    translation: en,
   },
   zh: {
-    zh,
+    translation: zh,
   },
   ja: {
-    ja,
+    translation: ja,
   },
 } as const
 
@@ -27,3 +27,5 @@ i18n
       escapeValue: false,
     },
   })
+
+export default i18n

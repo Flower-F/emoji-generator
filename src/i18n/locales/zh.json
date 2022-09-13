@@ -1,7 +1,7 @@
 {
-  "methods": {
-    "renderProps": "用renderProps转换",
-    "hook": "用hook转换",
-    "hoc": "用hoc转换"
+  "title": "表情包生成器",
+  "buttons": {
+    "randomize": "随机",
+    "download": "下载"
   }
 }

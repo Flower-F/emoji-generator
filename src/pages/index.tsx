@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 type SvgImageModule = typeof import('*.svg')
 type ImportModuleFunction = () => Promise<SvgImageModule>
 
@@ -140,6 +142,8 @@ const IndexPage = () => {
     setSelectedIndex({ ...selectedIndex, [tab]: index })
   }
 
+  const { t } = useTranslation()
+
   return (
     <div
       flex="~ col" items-center justify-center gap-4 w-full h-auto max-w-800px mx-auto py-4
@@ -170,11 +174,11 @@ const IndexPage = () => {
       {/* 随机与下载区域 */}
       <div flex flex-col sm:flex-row gap-2 bg="teal-4 dark:teal-6" transition-colors p-3 rounded mt-4>
         <button className="btn" onClick={getRandom}>
-          <div>Randomize</div>
+          <div>{t('buttons.randomize')}</div>
           <div i-carbon-loop text-xl></div>
         </button>
         <button className="btn" onClick={() => canvas.current?.toBlob(exportImage)}>
-          <div>Download</div>
+          <div>{t('buttons.download')}</div>
           <div i-carbon-download text-base></div>
         </button>
       </div>
