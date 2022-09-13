@@ -6,10 +6,16 @@ const Header = () => {
   const { toggleDark } = useDark()
   const { t } = useTranslation()
 
-  const [language, setLanguage] = useState(0)
+  const [language, setLanguage] = useLocalStorageState(
+    'lang',
+    {
+      defaultValue: Number(localStorage.getItem('lang')) ?? 0,
+    },
+  )
+
   const toggleLocales = () => {
     const locales = Object.keys(resources)
-    setLanguage(language => (language + 1) % locales.length)
+    setLanguage((language + 1) % locales.length)
     i18n.changeLanguage(locales[(language + 1) % locales.length])
   }
 
