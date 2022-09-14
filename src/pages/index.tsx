@@ -22,6 +22,14 @@ const resolveImportGlobModule = async (modules: Record<string, ImportModuleFunct
   return loadedModules.map(module => module.default)
 }
 
+const initialEmoji = {
+  head: 0,
+  eyes: 0,
+  eyebrows: 0,
+  mouth: 0,
+  detail: 0,
+}
+
 type TEmoji = 'head' | 'eyes' | 'eyebrows' | 'mouth' | 'detail'
 const tabs: TEmoji[] = ['head', 'eyes', 'eyebrows', 'mouth', 'detail']
 
@@ -34,15 +42,12 @@ const IndexPage = () => {
     mouth: [],
     detail: [],
   })
-  const [selectedIndex, setSelectedIndex] = useState({
-    head: 0,
-    eyes: 0,
-    eyebrows: 0,
-    mouth: 0,
-    detail: 0,
-  })
+  const [selectedIndex, setSelectedIndex] = useState(initialEmoji)
+  // 维护一个栈
+  const [steps, setSteps] = useState<{ index: { [key in TEmoji]: number }; tab: TEmoji }[]>([])
+  const { t } = useTranslation()
 
-  const selectedImage = useCallback(() => {
+  const selectedImage = useMemo(() => {
     return {
       head: images.head[selectedIndex.head],
       eyes: images.eyes[selectedIndex.eyes],
@@ -56,6 +61,21 @@ const IndexPage = () => {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
 
+  const selectItem = useMemoizedFn(({ tab, index }: { tab: TEmoji; index: number }) => {
+    if (steps.length > 0 && steps[steps.length - 1].tab === tab && selectedIndex[tab] === index)
+      return
+
+    const newIndex = {
+      ...selectedIndex,
+      [tab]: index,
+    }
+    setSelectedIndex(newIndex)
+    setSteps([...steps, {
+      index: newIndex,
+      tab,
+    }])
+  })
+
   const getRandom = useCallback(() => {
     const randomIndex = {
       head: randomInt(0, images.head.length - 1),
@@ -65,9 +85,23 @@ const IndexPage = () => {
       detail: randomInt(0, images.detail.length - 1),
     }
     setSelectedIndex(randomIndex)
+    setSteps(steps => [...steps, {
+      index: randomIndex,
+      tab: selectedTab,
+    }])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images.detail.length, images.eyebrows.length, images.eyes.length, images.head.length, images.mouth.length])
 
-  const exportImage = (blob: Blob | null) => {
+  const undo = useMemoizedFn(() => {
+    if (steps.length < 2)
+      return
+
+    setSelectedIndex(steps[steps.length - 2].index)
+    steps.pop()
+    setSteps([...steps])
+  })
+
+  const exportImage = useMemoizedFn((blob: Blob | null) => {
     if (!blob)
       return
 
@@ -76,7 +110,7 @@ const IndexPage = () => {
     a.href = url
     a.download = `emoji_${Date.now()}`
     a.click()
-  }
+  })
 
   const loadImage = useCallback(async () => {
     // load materials
@@ -109,10 +143,7 @@ const IndexPage = () => {
   const CANVAS_LENGTH = 640
 
   useEffect(() => {
-    if (!canvas.current)
-      return
-
-    const { head, eyebrows, eyes, mouth, detail } = selectedImage()
+    const { head, eyebrows, eyes, mouth, detail } = selectedImage
 
     Promise.all([
       pathToImage(head),
@@ -138,12 +169,6 @@ const IndexPage = () => {
     })
   }, [selectedImage])
 
-  const selectItem = (tab: TEmoji, index: number) => {
-    setSelectedIndex({ ...selectedIndex, [tab]: index })
-  }
-
-  const { t } = useTranslation()
-
   return (
     <div
       flex="~ col" items-center justify-center gap-4 w-full h-auto max-w-800px mx-auto py-4
@@ -157,11 +182,8 @@ const IndexPage = () => {
 
       {/* 操作区域 */}
       <div flex gap-2 bg="teal-5" px-3 py-2 rounded-full>
-        <button rounded-btn>
-          <div i-ooui-previous-ltr></div>
-        </button>
-        <button rounded-btn>
-          <div i-ooui:previous-rtl></div>
+        <button rounded-btn onClick={undo}>
+          <div i-carbon-undo></div>
         </button>
         <button rounded-btn>
           <div i-carbon-reflect-horizontal></div>
@@ -198,7 +220,7 @@ const IndexPage = () => {
             onClick={() => setSelectedTab(tab)}
             style={tab === selectedTab ? { background: 'rgba(94, 234, 212, var(--un-bg-opacity))' } : undefined}
           >
-            {selectedImage()[tab] && <img h-12 w-12 rounded-lg src={selectedImage()[tab]} alt={tab} />}
+            {selectedImage[tab] && <img h-12 w-12 rounded-lg src={selectedImage[tab]} alt={tab} />}
           </button>
         ))}
       </div>
@@ -213,7 +235,7 @@ const IndexPage = () => {
               border="~ teal-7 dark:teal-2 op-40"
               bg="teal-1 dark:#333 teal-3 dark:teal-4"
               hover="bg-teal-4 dark:bg-teal-3 border-2 border-op-90"
-              onClick={() => selectItem(tab, index)}
+              onClick={() => selectItem({ tab, index })}
               style={selectedIndex[selectedTab] === index ? { background: 'rgba(94, 234, 212, var(--un-bg-opacity))' } : undefined}
             >
               {image && <img h-10 w-10 rounded-lg src={image} alt={tab + index} />}
