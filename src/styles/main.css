@@ -8,7 +8,7 @@ body,
 
 html {
   overflow-x: hidden;
-  background: linear-gradient(90deg, rgb(193 237 223) 0%, #adefe4 100%);
+  background: linear-gradient(90deg, #c1eddf 0%, #adefe4 100%);
 }
 
 html.dark {
@@ -16,7 +16,9 @@ html.dark {
 }
 
 @keyframes enlarge {
-  60% { transform: scale(1.06); }
+  60% {
+    transform: scale(1.06);
+  }
 }
 
 canvas.animation {
