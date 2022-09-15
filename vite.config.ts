@@ -11,7 +11,7 @@ import { defineConfig } from 'vite'
 import Pages from 'vite-plugin-pages'
 
 export default defineConfig(({ mode }) => {
-  const basicOptions: UserConfigExport = {
+  const options: UserConfigExport = {
     resolve: {
       alias: {
         '~/': `${path.resolve(__dirname, 'src')}/`,
@@ -26,11 +26,18 @@ export default defineConfig(({ mode }) => {
           'react',
           'react-router-dom',
           'ahooks',
+          'react-i18next',
         ],
         dts: true,
         dirs: [
           './src/hooks',
         ],
+      }),
+      legacy({
+        targets: ['ie >= 11'],
+      }),
+      visualizer({
+        open: false,
       }),
     ],
     test: {
@@ -39,10 +46,10 @@ export default defineConfig(({ mode }) => {
   }
 
   if (mode === 'production') {
-    basicOptions.esbuild = {
+    options.esbuild = {
       drop: ['console', 'debugger'],
     }
-    basicOptions.build = {
+    options.build = {
       minify: 'esbuild',
       target: 'ES2015',
       rollupOptions: {
@@ -59,15 +66,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     }
-    basicOptions.plugins.push(
-      legacy({
-        targets: ['ie >= 11'],
-      }),
-      visualizer({
-        open: false,
-      }),
-    )
   }
 
-  return basicOptions
+  return options
 })

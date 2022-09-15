@@ -1,7 +1,12 @@
 {
   "title": "表情が生まれる",
-  "buttons": {
+  "tool": {
     "randomize": "ランダム",
-    "download": "ダウンロード"
+    "download": "ダウンロード",
+    "undo": "リターンマッチ"
+  },
+  "footer": {
+    "assets": "素材ソース",
+    "inspiration": "インスピレーション源"
   }
 }

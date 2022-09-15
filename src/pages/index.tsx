@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next'
-
 type SvgImageModule = typeof import('*.svg')
 type ImportModuleFunction = () => Promise<SvgImageModule>
 
@@ -174,7 +172,6 @@ const IndexPage = () => {
       flex="~ col" items-center justify-center gap-4 w-full h-auto max-w-800px mx-auto py-4
       bg="#f9f9f9 dark:#121212" rounded-md shadow-teal shadow-sm
     >
-
       {/* 展示区域 */}
       <div flex items-center justify-center mt-4 w="200px" h="200px" border="2 neutral-3" rounded-2xl>
         <canvas width="640" height="640" w="160px" h="160px" ref={canvas}></canvas>
@@ -182,26 +179,14 @@ const IndexPage = () => {
 
       {/* 操作区域 */}
       <div flex gap-2 bg="teal-5" px-3 py-2 rounded-full>
-        <button rounded-btn onClick={undo}>
-          <div i-carbon-undo></div>
+        <button rounded-btn title={t('tool.undo')} onClick={undo}>
+          <div i-carbon-undo w-6 h-6></div>
         </button>
-        <button rounded-btn>
-          <div i-carbon-reflect-horizontal></div>
+        <button rounded-btn title={t('tool.randomize')} onClick={getRandom}>
+          <div i-fad-random-1dice w-6 h-6 text-2xl></div>
         </button>
-        <button rounded-btn>
-          <div i-ri-code-s-slash-line></div>
-        </button>
-      </div>
-
-      {/* 随机与下载区域 */}
-      <div flex flex-col sm:flex-row gap-2 bg="teal-4 dark:teal-6" transition-colors p-3 rounded mt-4>
-        <button className="btn" onClick={getRandom}>
-          <div>{t('buttons.randomize')}</div>
-          <div i-carbon-loop text-xl></div>
-        </button>
-        <button className="btn" onClick={() => canvas.current?.toBlob(exportImage)}>
-          <div>{t('buttons.download')}</div>
-          <div i-carbon-download text-base></div>
+        <button rounded-btn title={t('tool.download')} onClick={() => canvas.current?.toBlob(exportImage)}>
+          <div i-carbon-download w-6 h-6></div>
         </button>
       </div>
 

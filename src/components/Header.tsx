@@ -20,12 +20,13 @@ const Header = () => {
   }
 
   return (
-    <header flex justify-between text="xl black dark:neutral-2">
-      <h1 text-lg font-extrabold tracking-wide>
+    <header flex justify-between items-center mb-2 pb-4 text="xl black dark:neutral-2">
+      <h1 text-lg font-extrabold tracking-wide flex items-center gap-2>
+        <img src="/favicon.svg" alt="logo" w-6 h-6 />
         {t('title')}
       </h1>
 
-      <nav text-xl inline-flex items-center gap-3 pb-4>
+      <nav text-xl inline-flex items-center gap-3>
         <button icon-btn onClick={toggleLocales}>
           <div i-carbon-language />
         </button>

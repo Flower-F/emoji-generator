@@ -1,7 +1,12 @@
 {
   "title": "表情包生成器",
-  "buttons": {
+  "tool": {
     "randomize": "随机",
-    "download": "下载"
+    "download": "下载",
+    "undo": "返回"
+  },
+  "footer": {
+    "assets": "素材来源于",
+    "inspiration": "灵感来源于"
   }
 }

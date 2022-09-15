@@ -1,7 +1,12 @@
 {
   "title": "Emoji Generator",
-  "buttons": {
+  "tool": {
     "randomize": "Randomize",
-    "download": "Download"
+    "download": "Download",
+    "undo": "Back"
+  },
+  "footer": {
+    "assets": "Assets are from",
+    "inspiration": "Strongly inspired by"
   }
 }
