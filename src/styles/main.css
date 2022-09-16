@@ -8,7 +8,7 @@ body,
 
 html {
   overflow-x: hidden;
-  background: linear-gradient(90deg, #c1eddf 0%, #adefe4 100%);
+  background: linear-gradient(90deg, #e7f8f2 0%, #d9f4ef 100%);
 }
 
 html.dark {
