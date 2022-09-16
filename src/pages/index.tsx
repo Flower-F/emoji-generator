@@ -161,7 +161,6 @@ const IndexPage = () => {
           canvas.current?.classList.remove('animation')
         }, 500)
       }
-      return null
     }).catch((e) => {
       console.error('Error:', e)
     })
@@ -179,14 +178,14 @@ const IndexPage = () => {
 
       {/* 操作区域 */}
       <div flex gap-2 bg="teal-5" px-3 py-2 rounded-full>
-        <button rounded-btn title={t('tool.undo')} onClick={undo}>
-          <div i-carbon-undo w-6 h-6></div>
+        <button rounded-btn w-12 h-12 title={t('tool.undo')} onClick={undo}>
+          <div i-carbon-undo></div>
         </button>
-        <button rounded-btn title={t('tool.randomize')} onClick={getRandom}>
-          <div i-fad-random-1dice w-6 h-6 text-2xl></div>
+        <button rounded-btn w-12 h-12 title={t('tool.randomize')} onClick={getRandom}>
+          <div i-fad-random-1dice w-6 h-6></div>
         </button>
-        <button rounded-btn title={t('tool.download')} onClick={() => canvas.current?.toBlob(exportImage)}>
-          <div i-carbon-download w-6 h-6></div>
+        <button rounded-btn w-12 h-12 title={t('tool.download')} onClick={() => canvas.current?.toBlob(exportImage)}>
+          <div i-carbon-cloud-download></div>
         </button>
       </div>
 
